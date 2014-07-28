@@ -63,9 +63,7 @@ class TwitterSession
       :scheme => "https",
       :host => "api.twitter.com",
       :path => "1.1/#{path}.json",
-      :query_values => {
-        :user_id => query_values[:user_id]
-      }
+      :query_values => query_values
     ).to_s
 
     self.access_token.get(url).body
@@ -76,9 +74,7 @@ class TwitterSession
       :scheme => "https",
       :host => "api.twitter.com",
       :path => "1.1/#{path}.json",
-      :query_values => {
-        :status => req_params[:status]
-      }
+      :query_values => req_params
     ).to_s
 
     self.access_token.post(url).body
