@@ -21,13 +21,11 @@ class TwitterSession
     if File.exist? TOKEN_FILE
       if @access_token.nil?
         @access_token = YAML.load(File.read(TOKEN_FILE))
-        p @access_token
       else
         @access_token
       end
     else
       @access_token = self.request_access_token
-      p @access_token
       File.open(TOKEN_FILE, "w").write(YAML.dump(@access_token))
 
       @access_token
@@ -52,30 +50,22 @@ class TwitterSession
   end
 
   def self.path_to_url(path, query_values = nil)
-    # All Twitter API calls are of the format
-    # "https://api.twitter.com/1.1/#{path}.json". Use
-    # `Addressable::URI` to build the full URL from just the
-    # meaningful part of the path (`statuses/user_timeline`)
-  end
-
-  def self.get(path, query_values)
-    url = Addressable::URI.new(
+    Addressable::URI.new(
       :scheme => "https",
       :host => "api.twitter.com",
       :path => "1.1/#{path}.json",
       :query_values => query_values
     ).to_s
+  end
+
+  def self.get(path, query_values)
+    url = self.path_to_url(path, query_values)
 
     self.access_token.get(url).body
   end
 
   def self.post(path, req_params)
-    url = Addressable::URI.new(
-      :scheme => "https",
-      :host => "api.twitter.com",
-      :path => "1.1/#{path}.json",
-      :query_values => req_params
-    ).to_s
+    url = self.path_to_url(path, req_params)
 
     self.access_token.post(url).body
   end
